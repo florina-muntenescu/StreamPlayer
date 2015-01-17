@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/radio_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/play_button"
+        android:text="@string/no_radio_selected"/>
+
+    <ImageView
+        android:id="@id/play_button"
+        android:layout_width="@dimen/play_button_size"
+        android:layout_height="@dimen/play_button_size"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/play_arrow"/>
+</RelativeLayout>

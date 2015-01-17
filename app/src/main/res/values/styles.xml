@@ -1,0 +1,19 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="title_text">
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/item_margin</item>
+        <item name="android:layout_marginLeft">@dimen/item_margin</item>
+        <item name="android:layout_marginRight">@dimen/item_margin</item>
+        <item name="android:layout_marginBottom">@dimen/item_margin</item>
+    </style>
+
+</resources>

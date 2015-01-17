@@ -1,0 +1,25 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.magic.stream.player">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!--used for keeping the processor from sleeping-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <application android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+>
+
+    </application>
+
+    <service
+        android:name=".MediaPlayerService">
+    </service>
+
+    <receiver android:name=".MusicIntentReceiver">
+        <intent-filter>
+            <action android:name="android.media.AUDIO_BECOMING_NOISY"/>
+        </intent-filter>
+    </receiver>
+
+</manifest>
