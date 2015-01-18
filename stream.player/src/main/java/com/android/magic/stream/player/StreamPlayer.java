@@ -79,8 +79,6 @@ public interface StreamPlayer {
 
     /**
      * Register a listener to be notified about track changes for the current stream
-     *
-     * @param listener
      */
     public void registerTrackListener(TrackListener listener);
 

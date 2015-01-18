@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -34,6 +35,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
     private Subscription mTrackMetadataSubscription;
 
     private StreamPlayerListener mListener;
+    private TrackListener mTrackListener;
 
     private MusicIntentReceiver mReceiver = new MusicIntentReceiver();
 
@@ -97,12 +99,29 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
     /**
      * Removes a listener of this service
-     *
-     * @param listener - The listener of this service, which implements the {@link
-     *                 StreamPlayerListener} interface
      */
-    public void removeListener(StreamPlayerListener listener) {
+    public void removeListener() {
         mListener = null;
+    }
+
+    /**
+     * Add a listener of the track change.
+     *
+     * @param listener The listener for the track, which implements the  {@link
+     *                 com.android.magic.stream.player.TrackListener}  interface
+     */
+    public void addTrackListener(TrackListener listener) {
+        mTrackListener = listener;
+    }
+
+    /**
+     * Removes the listener for the track change
+     */
+    public void removeTrackListener() {
+        mTrackListener = null;
+        if (mTrackMetadataSubscription != null) {
+            mTrackMetadataSubscription.unsubscribe();
+        }
     }
 
 
@@ -172,6 +191,9 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
         if (mListener != null) {
             mListener.onPlaying(mURL);
         }
+        if(mTrackListener != null){
+            getMetaData(mTrackListener);
+        }
     }
 
     @Override
@@ -219,8 +241,8 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
         mCurrentTrack = null;
     }
 
-    public void getMetaData(final TrackListener trackListener) {
-
+    private void getMetaData(final TrackListener trackListener) {
+        Log.d(LOG_TAG, "get metadata");
         final Long timeBefore = System.currentTimeMillis();
         URL url = null;
         try {
@@ -230,8 +252,9 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
         }
         MetaDataRetriever retriever = new MetaDataRetriever(url);
         Observable<String> metadataObservable = retriever.getMetadataAsync();
-        mTrackMetadataSubscription = metadataObservable.repeat().subscribeOn(
-                Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(
+        mTrackMetadataSubscription = metadataObservable
+                .subscribeOn(
+                        Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Subscriber<String>() {
                     @Override
                     public void onCompleted() {

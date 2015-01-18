@@ -72,7 +72,8 @@ import rx.Subscriber;
      * @return a mapping containing the url and the stream title and possibly artist
      */
     public Observable<String> getMetadataAsync() {
-        return Observable.create(
+        return Observable
+                .create(
                 new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(

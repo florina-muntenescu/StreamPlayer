@@ -4,42 +4,45 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="#333333"
-              android:orientation="horizontal"
+              android:orientation="vertical"
     >
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="7"
-        android:gravity="center"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/radio_title"
             style="@style/title_text"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
             android:gravity="center_horizontal"
+            android:lines="2"
+            android:layout_centerVertical="true"
             android:text="@string/no_radio_selected"
+            android:layout_toLeftOf="@+id/play_pause_button"
             />
 
-        <TextView
-            android:id="@+id/radio_track"
-            style="@style/title_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin"
-            android:gravity="center_horizontal"
-            android:text="Track"
-            android:visibility="gone"
-            />
-    </LinearLayout>
+        <ImageView
+            android:id="@id/play_pause_button"
+            android:layout_width="@dimen/play_button_size_big"
+            android:layout_height="@dimen/play_button_size_big"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:src="@drawable/play_circle"/>
+    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/play_pause_button"
-        android:layout_width="@dimen/play_button_size_big"
-        android:layout_height="@dimen/play_button_size_big"
-        android:layout_gravity="center"
-        android:src="@drawable/play_circle"/>
+
+    <TextView
+        android:id="@+id/radio_track"
+        style="@style/title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/item_margin"
+        android:gravity="center_horizontal"
+        android:lines="2"
+        />
+
 </LinearLayout>

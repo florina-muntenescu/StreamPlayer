@@ -32,21 +32,26 @@ import android.util.Log;
         bindToService();
     }
 
+    /**
+     * Plays the stream
+     *
+     * @param url the stream that will be played
+     */
     @Override
     public void play(@NonNull String url) {
-        // if it's paused
+        // if it's paused just start it
         if (mURL != null && mURL.equals(url) && !mService.isStopped() && !mService.isPlaying()) {
             mService.startMediaPlayer();
         } else {
-            newRadioSelected(url);
+            // need to initialize again the player
+            mURL = url;
+            mService.initializePlayer(url);
         }
     }
 
-    private void newRadioSelected(String url) {
-        mURL = url;
-        mService.initializePlayer(url);
-    }
-
+    /**
+     * Pauses the currently playing stream
+     */
     @Override
     public void pause() {
         if (mService.getMediaPlayer().isPlaying()) {
@@ -54,6 +59,9 @@ import android.util.Log;
         }
     }
 
+    /**
+     * Stops the currently playing stream
+     */
     @Override
     public void stop() {
         if (mService.getMediaPlayer().isPlaying()) {
@@ -66,9 +74,9 @@ import android.util.Log;
      */
     @Override
     public void shutDown() {
-
         if (mBound) {
             mService.stopMediaPlayer();
+            mService.removeListener();
             // Detach existing connection.
             mContext.unbindService(mConnection);
             mBound = false;
@@ -79,38 +87,53 @@ import android.util.Log;
 
     }
 
+    /**
+     * Retrieves the playing URL or null if there's no url currently playing
+     *
+     * @return the url of the radio playing or null
+     */
     @Override
     public String getPlayingUrl() {
-        if(mService != null && mService.isPlaying()){
+        if (mService != null && mService.isPlaying()) {
             return mService.getURL();
         }
         return null;
     }
 
+    /**
+     * Register a listener to be notified about player states
+     */
     @Override
     public void registerStreamPlayerListener(StreamPlayerListener listener) {
         mStreamPlayerListener = listener;
-        if(mService != null){
+        if (mService != null) {
             mService.addListener(listener);
         }
     }
 
+    /**
+     * Unregister the {@link com.android.magic.stream.player.StreamPlayerListener}
+     */
     @Override
     public void unregisterStreamPlayerListener() {
-        if (mService != null) {
-            mService.removeListener(mStreamPlayerListener);
-        }
+        mService.removeListener();
         mStreamPlayerListener = null;
     }
 
+    /**
+     * Register a listener to be notified about track changes for the current stream
+     */
     @Override
     public void registerTrackListener(TrackListener listener) {
         mTrackListener = listener;
-        if(mService != null) {
-            mService.getMetaData(listener);
+        if (mService != null) {
+            mService.addTrackListener(listener);
         }
     }
 
+    /**
+     * Unregister the track listener
+     */
     @Override
     public void unregisterTrackListener() {
         mService.stopRetrievingMetadata();
@@ -158,8 +181,8 @@ import android.util.Log;
             // client
             mBound = true;
             mService.addListener(mStreamPlayerListener);
-            if(mTrackListener != null){
-                mService.getMetaData(mTrackListener);
+            if (mTrackListener != null) {
+                mService.addTrackListener(mTrackListener);
             }
         }
 
