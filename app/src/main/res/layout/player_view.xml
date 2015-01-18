@@ -5,12 +5,12 @@
               android:layout_height="match_parent"
               android:background="#333333"
               android:orientation="horizontal"
-              android:weightSum="10">
+    >
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="6"
+        android:layout_weight="7"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -19,8 +19,8 @@
             style="@style/title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginBottom="0dp"
+            android:gravity="center_horizontal"
             android:text="@string/no_radio_selected"
             />
 
@@ -29,8 +29,8 @@
             style="@style/title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/item_margin"
+            android:gravity="center_horizontal"
             android:text="Track"
             android:visibility="gone"
             />
@@ -38,8 +38,8 @@
 
     <ImageView
         android:id="@+id/play_pause_button"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_width="@dimen/play_button_size_big"
+        android:layout_height="@dimen/play_button_size_big"
+        android:layout_gravity="center"
         android:src="@drawable/play_circle"/>
 </LinearLayout>

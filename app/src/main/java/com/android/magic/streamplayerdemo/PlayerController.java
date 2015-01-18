@@ -70,6 +70,10 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
         mStreamPlayer.pause();
     }
 
+    public void stop(){
+        mStreamPlayer.stop();
+    }
+
     @Override
     public void onInitializePlayerStart(String url) {
 

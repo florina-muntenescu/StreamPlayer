@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
 import rx.Observable;
 import rx.Subscriber;
 
+/**
+ * Handles retrieving and parsing of the metadata to get the stream title.
+ */
 /*package*/ class MetaDataRetriever {
 
     private static final String LOG_TAG = MetaDataRetriever.class.getSimpleName();

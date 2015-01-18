@@ -1,6 +1,7 @@
 package com.android.magic.stream.player;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -8,6 +9,8 @@ import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+
+import java.io.IOException;
 
 
 /**
@@ -18,12 +21,14 @@ import android.util.Log;
 
     private static final String LOG_TAG = MediaPlayerThread.class.getSimpleName();
 
-    private StatefulMediaPlayer mMediaPlayer = new StatefulMediaPlayer();
+    private MediaPlayer mMediaPlayer = new MediaPlayer();
     private IMediaPlayerThreadClient mClient;
     private WifiManager.WifiLock mWifiLock;
+    private Context mContext;
 
     public MediaPlayerThread(IMediaPlayerThreadClient client, Context context) {
         mClient = client;
+        mContext = context;
         mWifiLock = ((WifiManager) context.getApplicationContext().getSystemService(
                 Context.WIFI_SERVICE)).createWifiLock(
                 WifiManager.WIFI_MODE_FULL, "streamplayer.lock");
@@ -39,15 +44,20 @@ import android.util.Log;
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.reset();
         }
-        mMediaPlayer = new StatefulMediaPlayer(station);
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            mMediaPlayer.setDataSource(station);
+            mMediaPlayer.setOnBufferingUpdateListener(this);
+            mMediaPlayer.setOnInfoListener(this);
+            mMediaPlayer.setOnPreparedListener(this);
+            mMediaPlayer.prepareAsync();
 
-        mMediaPlayer.setOnBufferingUpdateListener(this);
-        mMediaPlayer.setOnInfoListener(this);
-        mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.prepareAsync();
+            mWifiLock.acquire();
 
-        mWifiLock.acquire();
+        }catch (IOException e){
 
+        }
     }
 
 
@@ -84,6 +94,7 @@ import android.util.Log;
         //            mMediaPlayer.stop();
         //        }
         mMediaPlayer.release();
+        mMediaPlayer = null;
 
         mClient.onStop();
 
@@ -115,14 +126,14 @@ import android.util.Log;
 
     @Override
     public void onPrepared(MediaPlayer player) {
-        startMediaPlayer();
         Log.d(LOG_TAG, "prepared ");
+        startMediaPlayer();
     }
 
     /**
      * @return
      */
-    public StatefulMediaPlayer getMediaPlayer() {
+    public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
     }
 

@@ -7,4 +7,6 @@
     <dimen name="title_text_size">16sp</dimen>
 
     <dimen name="play_button_size">50dp</dimen>
+    <dimen name="play_button_size_big">100dp</dimen>
+
 </resources>

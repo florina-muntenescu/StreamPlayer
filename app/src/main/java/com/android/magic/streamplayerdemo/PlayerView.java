@@ -19,24 +19,31 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
     private Context mContext;
 
     private TextView mRadioUrl;
+    private TextView mTrack;
     private ImageView mPlayPauseButton;
 
     private String mRadio;
 
     public PlayerView(Context context) {
         super(context);
-        init(context);
+        if (!isInEditMode()) {
+            init(context);
+        }
     }
 
     public PlayerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        if (!isInEditMode()) {
+            init(context);
+        }
     }
 
 
     public PlayerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+        if (!isInEditMode()) {
+            init(context);
+        }
     }
 
     private void init(final Context context) {
@@ -49,6 +56,7 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
 
         mRadioUrl = ButterKnife.findById(rootView, R.id.radio_title);
         mPlayPauseButton = ButterKnife.findById(rootView, R.id.play_pause_button);
+        mTrack = ButterKnife.findById(rootView, R.id.radio_track);
 
         mPlayPauseButton.setOnClickListener(
                 new OnClickListener() {
@@ -56,14 +64,13 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
                     public void onClick(View v) {
                         if (mRadio != null) {
                             if (mPlayerController.getPlayingUrl() != null) {
-                                mPlayerController.pause();
+                                mPlayerController.stop();
                             } else {
                                 mPlayerController.play(mRadio);
                             }
                         }
                     }
                 });
-
     }
 
     @Override
@@ -72,19 +79,25 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
         mPlayerController.unregisterListener(this);
     }
 
-
-    @Override
-    public void onPlay(String radioURL) {
+    public void setPlayingURL(String radioURL){
         mRadioUrl.setText(radioURL);
+        mRadio = radioURL;
         mPlayPauseButton.setImageResource(R.drawable.pause_circle_fill);
     }
 
     @Override
-    public void onPlayerStop() {
-
+    public void onPlay(String radioURL) {
+        setPlayingURL(radioURL);
+        mTrack.setText("");
     }
 
     @Override
-    public void onTrackChanged(String track) {
+    public void onPlayerStop() {
+        mPlayPauseButton.setImageResource(R.drawable.play_circle);
+    }
+
+    @Override
+    public void onTrackChanged(final String track) {
+        mTrack.setText(track);
     }
 }

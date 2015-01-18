@@ -33,11 +33,11 @@ import android.util.Log;
 
     @Override
     public void play(@NonNull String url) {
-
-        if (mURL != null && mURL.equals(mURL) && !mService.isPlaying()) {
+        // if it's paused
+        if (mURL != null && mURL.equals(url) && !mService.isStopped() && !mService.isPlaying()) {
             mService.startMediaPlayer();
         } else {
-            newRadioSelected(mURL);
+            newRadioSelected(url);
         }
     }
 
@@ -48,14 +48,14 @@ import android.util.Log;
 
     @Override
     public void pause() {
-        if (mService.getMediaPlayer().isStarted()) {
+        if (mService.getMediaPlayer().isPlaying()) {
             mService.pauseMediaPlayer();
         }
     }
 
     @Override
     public void stop() {
-        if (mService.getMediaPlayer().isStarted()) {
+        if (mService.getMediaPlayer().isPlaying()) {
             mService.stopMediaPlayer();
         }
     }
@@ -80,7 +80,7 @@ import android.util.Log;
 
     @Override
     public String getPlayingUrl() {
-        if(mService.isPlaying()){
+        if(mService != null && mService.isPlaying()){
             return mService.getURL();
         }
         return null;

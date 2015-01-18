@@ -3,6 +3,7 @@ package com.android.magic.stream.player;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
     private static final String LOG_TAG = MediaPlayerService.class.getSimpleName();
 
-    public static final String MEDIA_PLAYER_SERVICE = "filtermusic.net.player.MediaPlayerService";
+    public static final String MEDIA_PLAYER_SERVICE = "stream.player.MediaPlayerService";
 
     private MediaPlayerThread mMediaPlayerThread;
     private final Binder mBinder = new MediaPlayerBinder();
@@ -67,7 +68,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      *
      * @return
      */
-    public StatefulMediaPlayer getMediaPlayer() {
+    public MediaPlayer getMediaPlayer() {
         return mMediaPlayerThread.getMediaPlayer();
     }
 
@@ -115,8 +116,12 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
     }
 
     public boolean isPlaying() {
-        StatefulMediaPlayer player = mMediaPlayerThread.getMediaPlayer();
-        return player != null && player.isStarted();
+        MediaPlayer player = mMediaPlayerThread.getMediaPlayer();
+        return player != null && player.isPlaying();
+    }
+
+    public boolean isStopped(){
+        return mMediaPlayerThread.getMediaPlayer() == null;
     }
 
     /**
@@ -152,7 +157,9 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
     @Override
     public void onError() {
-        mListener.onError();
+        if(mListener != null){
+            mListener.onError();
+        }
     }
 
     @Override
@@ -162,12 +169,16 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
     @Override
     public void onPlaying() {
-        mListener.onPlaying(mURL);
+        if(mListener != null) {
+            mListener.onPlaying(mURL);
+        }
     }
 
     @Override
     public void onStop() {
-        mListener.onPlayerStop();
+        if(mListener != null) {
+            mListener.onPlayerStop();
+        }
         if (mTrackMetadataSubscription != null) {
             mTrackMetadataSubscription.unsubscribe();
         }

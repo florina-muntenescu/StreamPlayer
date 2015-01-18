@@ -59,6 +59,9 @@ public class RadiosFragment extends android.support.v4.app.Fragment {
                     }
                 });
 
+        if(mPlayerController.getPlayingUrl() != null){
+            mPlayerView.setPlayingURL(mPlayerController.getPlayingUrl());
+        }
         return rootView;
     }
 
