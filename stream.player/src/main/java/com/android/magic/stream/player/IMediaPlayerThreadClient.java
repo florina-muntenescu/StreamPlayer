@@ -1,7 +1,7 @@
 package com.android.magic.stream.player;
 
 /**
- * Created by android on 11/10/14.
+ * Listener of the thread that handles the {@link android.media.MediaPlayer}
  */
 /*default*/ interface IMediaPlayerThreadClient
 {

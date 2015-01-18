@@ -90,11 +90,13 @@ import java.io.IOException;
      * Stops the contained StatefulMediaPlayer.
      */
     public void stopMediaPlayer() {
-        //        if(mMediaPlayer.isPlaying()) {
-        //            mMediaPlayer.stop();
-        //        }
-        mMediaPlayer.release();
-        mMediaPlayer = null;
+        if(mMediaPlayer != null) {
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.stop();
+            }
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
 
         mClient.onStop();
 

@@ -17,9 +17,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-
 /**
- * An extension of android.app.Service class which provides management to a MediaPlayerThread.<br>
+ * An extension of android.app.Service class which provides management to a MediaPlayerThread.</p>
+ * Add this service in the AndroidManifest file.
  */
 public class MediaPlayerService extends Service implements IMediaPlayerThreadClient {
 
@@ -120,7 +120,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
         return player != null && player.isPlaying();
     }
 
-    public boolean isStopped(){
+    public boolean isStopped() {
         return mMediaPlayerThread.getMediaPlayer() == null;
     }
 
@@ -157,7 +157,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
     @Override
     public void onError() {
-        if(mListener != null){
+        if (mListener != null) {
             mListener.onError();
         }
     }
@@ -169,14 +169,14 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
     @Override
     public void onPlaying() {
-        if(mListener != null) {
+        if (mListener != null) {
             mListener.onPlaying(mURL);
         }
     }
 
     @Override
     public void onStop() {
-        if(mListener != null) {
+        if (mListener != null) {
             mListener.onPlayerStop();
         }
         if (mTrackMetadataSubscription != null) {
@@ -257,7 +257,6 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
                             trackListener.onTrackChanged(mCurrentTrack);
                         }
                     }
-                }
-    );
-}
+                });
+    }
 }
