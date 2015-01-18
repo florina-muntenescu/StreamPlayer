@@ -1,6 +1,5 @@
 package com.android.magic.streamplayerdemo;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +25,8 @@ public class RadiosFragment extends android.support.v4.app.Fragment {
 
     private ListView mRadiosList;
     private PlayerView mPlayerView;
+
+    private ListAdapter mListAdapter;
 
     private PlayerController mPlayerController;
 
@@ -44,10 +46,10 @@ public class RadiosFragment extends android.support.v4.app.Fragment {
         radios.add("http://xstream1.somafm.com:8600");
         radios.add("http://tsfjazz.ice.infomaniak.ch:80/tsfjazz-high.mp3");
 
-        ListAdapter listAdapter = new RadiosListAdapter(getActivity(),
-                R.layout.radio_list_item_view, radios);
+        mListAdapter = new RadiosListAdapter(
+                getActivity(), R.layout.radio_list_item_view, radios);
 
-        mRadiosList.setAdapter(listAdapter);
+        mRadiosList.setAdapter(mListAdapter);
 
         mRadiosList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -59,7 +61,7 @@ public class RadiosFragment extends android.support.v4.app.Fragment {
                     }
                 });
 
-        if(mPlayerController.getPlayingUrl() != null){
+        if (mPlayerController.getPlayingUrl() != null) {
             mPlayerView.setPlayingURL(mPlayerController.getPlayingUrl());
         }
         return rootView;
@@ -68,6 +70,8 @@ public class RadiosFragment extends android.support.v4.app.Fragment {
     static class ViewHolder {
         @InjectView(R.id.radio_title)
         TextView title;
+        @InjectView(R.id.play_button)
+        ImageView playButton;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);

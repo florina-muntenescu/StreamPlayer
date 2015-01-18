@@ -71,6 +71,9 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
                         }
                     }
                 });
+        if(mPlayerController.getPlayingUrl() != null){
+            mRadio = mPlayerController.getPlayingUrl();
+        }
     }
 
     @Override

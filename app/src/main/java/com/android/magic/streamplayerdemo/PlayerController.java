@@ -47,6 +47,7 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
     public void registerListener(PlayerListener listener) {
         if (mPlayerListenerList.isEmpty()) {
             mStreamPlayer.registerStreamPlayerListener(this);
+            mStreamPlayer.registerTrackListener(this);
         }
         mPlayerListenerList.add(listener);
     }
@@ -55,6 +56,7 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
         mPlayerListenerList.remove(listener);
         if (mPlayerListenerList.isEmpty()) {
             mStreamPlayer.unregisterStreamPlayerListener();
+            mStreamPlayer.unregisterTrackListener();
         }
     }
 

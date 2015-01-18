@@ -250,7 +250,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
                         final String timeGetMetadata = String.format(
                                 "%1$,.5f", (double) timeElapsed / 1000);
                         Log.d(LOG_TAG, "time metadata " + timeGetMetadata + " " + metadata);
-                        Log.d(LOG_TAG, metadata);
+                        Log.d(LOG_TAG, "metadata: " + metadata);
 
                         if (isPlaying() && !metadata.equals(mCurrentTrack)) {
                             mCurrentTrack = metadata;

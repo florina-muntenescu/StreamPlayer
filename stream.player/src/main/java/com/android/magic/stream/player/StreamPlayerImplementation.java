@@ -18,6 +18,7 @@ import android.util.Log;
     private static final String LOG_TAG = StreamPlayerImplementation.class.getSimpleName();
 
     private StreamPlayerListener mStreamPlayerListener;
+    private TrackListener mTrackListener;
 
     private MediaPlayerService mService;
     private boolean mBound;
@@ -89,6 +90,9 @@ import android.util.Log;
     @Override
     public void registerStreamPlayerListener(StreamPlayerListener listener) {
         mStreamPlayerListener = listener;
+        if(mService != null){
+            mService.addListener(listener);
+        }
     }
 
     @Override
@@ -101,7 +105,10 @@ import android.util.Log;
 
     @Override
     public void registerTrackListener(TrackListener listener) {
-        mService.getMetaData(listener);
+        mTrackListener = listener;
+        if(mService != null) {
+            mService.getMetaData(listener);
+        }
     }
 
     @Override
@@ -151,6 +158,9 @@ import android.util.Log;
             // client
             mBound = true;
             mService.addListener(mStreamPlayerListener);
+            if(mTrackListener != null){
+                mService.getMetaData(mTrackListener);
+            }
         }
 
         @Override

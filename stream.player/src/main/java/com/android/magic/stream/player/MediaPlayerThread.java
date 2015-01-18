@@ -41,7 +41,7 @@ import java.io.IOException;
      */
     public void initializePlayer(final String station) {
 
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.reset();
         }
         mMediaPlayer = new MediaPlayer();
