@@ -2,6 +2,7 @@ package com.android.magic.streamplayerdemo;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +20,7 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
     private Context mContext;
 
     private TextView mRadioUrl;
-    private TextView mTrack;
+    private TextView mTrackView;
     private ImageView mPlayPauseButton;
 
     private String mRadio;
@@ -56,7 +57,7 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
 
         mRadioUrl = ButterKnife.findById(rootView, R.id.radio_title);
         mPlayPauseButton = ButterKnife.findById(rootView, R.id.play_pause_button);
-        mTrack = ButterKnife.findById(rootView, R.id.radio_track);
+        mTrackView = ButterKnife.findById(rootView, R.id.radio_track);
 
         mPlayPauseButton.setOnClickListener(
                 new OnClickListener() {
@@ -91,7 +92,7 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
     @Override
     public void onPlay(String radioURL) {
         setPlayingURL(radioURL);
-        mTrack.setText("");
+        mTrackView.setText("");
     }
 
     @Override
@@ -101,6 +102,7 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
 
     @Override
     public void onTrackChanged(final String track) {
-        mTrack.setText(track);
+        Log.d(PlayerView.class.getSimpleName(), "track changed " + track);
+        mTrackView.setText(track);
     }
 }

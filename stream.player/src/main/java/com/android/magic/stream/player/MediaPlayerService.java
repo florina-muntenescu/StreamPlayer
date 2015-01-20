@@ -27,6 +27,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
     private static final String LOG_TAG = MediaPlayerService.class.getSimpleName();
 
     public static final String MEDIA_PLAYER_SERVICE = "stream.player.MediaPlayerService";
+    private static final int METADATA_REQUEST_TIME_INTERVAL_SECONDS = 15; // seconds
 
     private MediaPlayerThread mMediaPlayerThread;
     private final Binder mBinder = new MediaPlayerBinder();
@@ -111,6 +112,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      *                 com.android.magic.stream.player.TrackListener}  interface
      */
     public void addTrackListener(TrackListener listener) {
+        Log.d(LOG_TAG, "addTrackListener");
         mTrackListener = listener;
     }
 
@@ -118,10 +120,12 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      * Removes the listener for the track change
      */
     public void removeTrackListener() {
+        Log.d(LOG_TAG, "removeTrackListener");
         mTrackListener = null;
         if (mTrackMetadataSubscription != null) {
             mTrackMetadataSubscription.unsubscribe();
         }
+        mCurrentTrack = null;
     }
 
 
@@ -242,8 +246,14 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
         mCurrentTrack = null;
     }
 
+    /**
+     * Request the metadata every
+     * {@link MediaPlayerService}#METADATA_REQUEST_TIME_INTERVAL_SECONDS = 15 and notify the track
+     * listener when the track has been changed
+     * @param trackListener listener that listens to track changed
+     */
     private void getMetaData(final TrackListener trackListener) {
-        Log.d(LOG_TAG, "get metadata");
+        Log.d(LOG_TAG, "requesting medatada");
         URL url = null;
         try {
             url = new URL(mURL);
@@ -261,8 +271,8 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
                         try {
                             final String metadata = retriever.getMetadata();
                             Log.d(LOG_TAG, "metadata retrieved: " + metadata);
-
-                            if (isPlaying() && metadata != null && !metadata.equals
+                            Log.d(LOG_TAG, "is playing " + isPlaying() + " current track " + mCurrentTrack);
+                            if (isPlaying() && !metadata.equals
                                     (mCurrentTrack)) {
                                 mCurrentTrack = metadata;
                                 trackListener.onTrackChanged(mCurrentTrack);
@@ -273,30 +283,10 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
                         } finally {
                             // recurse until unsubscribed (schedule will do nothing if unsubscribed)
                             ((Scheduler.Worker) mTrackMetadataSubscription).schedule(
-                                    this, 5, TimeUnit.SECONDS);
+                                    this, METADATA_REQUEST_TIME_INTERVAL_SECONDS, TimeUnit.SECONDS);
                         }
                     }
 
                 });
-        //        mTrackMetadataSubscription = metadataObservable
-        //                .subscribeOn(
-        //                        Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread
-        // ()).subscribe(
-        //                new Subscriber<String>() {
-        //                    @Override
-        //                    public void onCompleted() {
-        //                        // nothing
-        //                        Log.d(LOG_TAG, "track metadata completed");
-        //                    }
-        //
-        //                    @Override
-        //                    public void onError(Throwable e) {
-        //                    }
-        //
-        //                    @Override
-        //                    public void onNext(String metadata) {
-        //
-        //                    }
-        //                });
     }
 }

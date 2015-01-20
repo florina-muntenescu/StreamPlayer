@@ -1,6 +1,7 @@
 package com.android.magic.streamplayerdemo;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.magic.stream.player.StreamPlayer;
 import com.android.magic.stream.player.StreamPlayerFactory;
@@ -101,6 +102,7 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
 
     @Override
     public void onTrackChanged(String track) {
+        Log.d(LOG_TAG, "track changed " + track + " listeners " + mPlayerListenerList.size());
         for (PlayerListener listener : mPlayerListenerList) {
             listener.onTrackChanged(track);
         }
