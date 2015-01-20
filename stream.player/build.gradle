@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "com.android.magic.stream.player"
@@ -18,6 +18,27 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'LICENSE'
+        exclude 'LICENSE.txt'
+        exclude 'NOTICE'
+        exclude 'asm-license.txt'
+    }
+}
+
+
+/**
+ * Allows to package compiled classes into one jar
+ */
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.description 'Allows to package the library sources into the jar'
+    task.baseName "Stream-Player-${project.android.defaultConfig.versionName}"
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
 }
 
 dependencies {
