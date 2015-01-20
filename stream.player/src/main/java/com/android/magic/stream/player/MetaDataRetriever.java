@@ -35,52 +35,20 @@ import rx.Subscriber;
     }
 
     /**
-     * Get artist using stream's title
-     *
-     * @return String
-     * @throws java.io.IOException
-     */
-    public String getArtist() throws IOException {
-        Map<String, String> data = getMetadata();
-
-        if (!data.containsKey(STREAM_TITLE)) return "";
-
-        String streamTitle = data.get(STREAM_TITLE);
-        String title = streamTitle.substring(0, streamTitle.indexOf("-"));
-        return title.trim();
-    }
-
-    /**
-     * Get title using stream's title
-     *
-     * @return String
-     * @throws java.io.IOException
-     */
-    public String getTitle() throws IOException {
-        Map<String, String> data = getMetadata();
-
-        if (!data.containsKey(STREAM_TITLE)) return "";
-
-        String streamTitle = data.get(STREAM_TITLE);
-        String artist = streamTitle.substring(streamTitle.indexOf("-") + 1);
-        return artist.trim();
-    }
-
-    /**
      * Get the mMetadata of the url async, every 5 seconds
      *
      * @return a mapping containing the url and the stream title and possibly artist
      */
     public Observable<String> getMetadataAsync() {
-        return Observable
-                .create(
+
+        return Observable.create(
                 new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(
                             final Subscriber<? super String> observer) {
                         Log.d(LOG_TAG, "call refresh");
                         try {
-                            refreshMeta();
+                            retreiveMetadata();
                             observer.onNext(mMetadata.get(STREAM_TITLE));
                         } catch (IOException e) {
                         }
@@ -89,16 +57,10 @@ import rx.Subscriber;
                 });
     }
 
-    public Map<String, String> getMetadata() throws IOException {
-        if (mMetadata == null) {
-            refreshMeta();
-        }
-
-        return mMetadata;
-    }
-
-    public void refreshMeta() throws IOException {
+    public String getMetadata() throws IOException {
         retreiveMetadata();
+
+        return mMetadata.get(STREAM_TITLE);
     }
 
     private void retreiveMetadata() throws IOException {

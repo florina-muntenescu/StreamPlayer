@@ -8,14 +8,14 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Subscriber;
+import rx.Scheduler;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -191,7 +191,8 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
         if (mListener != null) {
             mListener.onPlaying(mURL);
         }
-        if(mTrackListener != null){
+        stopRetrievingMetadata();
+        if (mTrackListener != null) {
             getMetaData(mTrackListener);
         }
     }
@@ -243,43 +244,59 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
     private void getMetaData(final TrackListener trackListener) {
         Log.d(LOG_TAG, "get metadata");
-        final Long timeBefore = System.currentTimeMillis();
         URL url = null;
         try {
             url = new URL(mURL);
         } catch (MalformedURLException e) {
 
         }
-        MetaDataRetriever retriever = new MetaDataRetriever(url);
-        Observable<String> metadataObservable = retriever.getMetadataAsync();
-        mTrackMetadataSubscription = metadataObservable
-                .subscribeOn(
-                        Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-                        // nothing
-                        Log.d(LOG_TAG, "track metadata completed");
-                    }
+        final MetaDataRetriever retriever = new MetaDataRetriever(url);
+
+        mTrackMetadataSubscription = Schedulers.newThread().createWorker();
+        ((Scheduler.Worker) mTrackMetadataSubscription).schedule(
+                new Action0() {
 
                     @Override
-                    public void onError(Throwable e) {
-                    }
+                    public void call() {
+                        try {
+                            final String metadata = retriever.getMetadata();
+                            Log.d(LOG_TAG, "metadata retrieved: " + metadata);
 
-                    @Override
-                    public void onNext(String metadata) {
+                            if (isPlaying() && metadata != null && !metadata.equals
+                                    (mCurrentTrack)) {
+                                mCurrentTrack = metadata;
+                                trackListener.onTrackChanged(mCurrentTrack);
+                            }
 
-                        final Long timeElapsed = System.currentTimeMillis() - timeBefore;
-                        final String timeGetMetadata = String.format(
-                                "%1$,.5f", (double) timeElapsed / 1000);
-                        Log.d(LOG_TAG, "time metadata " + timeGetMetadata + " " + metadata);
-                        Log.d(LOG_TAG, "metadata: " + metadata);
+                        } catch (IOException exception) {
 
-                        if (isPlaying() && !metadata.equals(mCurrentTrack)) {
-                            mCurrentTrack = metadata;
-                            trackListener.onTrackChanged(mCurrentTrack);
+                        } finally {
+                            // recurse until unsubscribed (schedule will do nothing if unsubscribed)
+                            ((Scheduler.Worker) mTrackMetadataSubscription).schedule(
+                                    this, 5, TimeUnit.SECONDS);
                         }
                     }
+
                 });
+        //        mTrackMetadataSubscription = metadataObservable
+        //                .subscribeOn(
+        //                        Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread
+        // ()).subscribe(
+        //                new Subscriber<String>() {
+        //                    @Override
+        //                    public void onCompleted() {
+        //                        // nothing
+        //                        Log.d(LOG_TAG, "track metadata completed");
+        //                    }
+        //
+        //                    @Override
+        //                    public void onError(Throwable e) {
+        //                    }
+        //
+        //                    @Override
+        //                    public void onNext(String metadata) {
+        //
+        //                    }
+        //                });
     }
 }
