@@ -6,12 +6,6 @@ package com.android.magic.stream.player;
 public interface StreamPlayerListener {
 
     /**
-     * A callback made by a MediaPlayerService onto its listeners to indicate that a player is
-     * initializing.
-     */
-    public void onInitializePlayerStart(final String url);
-
-    /**
      * A callback made by a MediaPlayerService onto its listeners to indicate that a player was
      * successfully initialized.
      */
@@ -20,8 +14,9 @@ public interface StreamPlayerListener {
     /**
      * A callback made by a MediaPlayerService onto its listeners to indicate that a player
      * encountered an error.
+     * @param error - the stream player error
      */
-    public void onError();
+    public void onError(StreamPlayerError error);
 
     /**
      * A callback made by a MediaPlayerService onto its clients to indicate that a player has

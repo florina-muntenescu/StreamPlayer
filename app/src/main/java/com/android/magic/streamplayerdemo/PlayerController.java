@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.magic.stream.player.StreamPlayer;
+import com.android.magic.stream.player.StreamPlayerError;
 import com.android.magic.stream.player.StreamPlayerFactory;
 import com.android.magic.stream.player.StreamPlayerListener;
 import com.android.magic.stream.player.TrackListener;
@@ -78,11 +79,6 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
     }
 
     @Override
-    public void onInitializePlayerStart(String url) {
-
-    }
-
-    @Override
     public void onPlaying(String url) {
         for (PlayerListener listener : mPlayerListenerList) {
             listener.onPlay(url);
@@ -90,7 +86,9 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
     }
 
     @Override
-    public void onError() {
+    public void onError(StreamPlayerError error) {
+        Log.d(LOG_TAG, "error " + error.name());
+        onPlayerStop();
     }
 
     @Override

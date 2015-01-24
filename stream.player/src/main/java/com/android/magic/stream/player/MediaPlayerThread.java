@@ -5,7 +5,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -17,18 +16,16 @@ import java.io.IOException;
  * Player thread
  */
 /*default*/ class MediaPlayerThread extends Thread implements OnBufferingUpdateListener,
-        OnInfoListener, OnPreparedListener, OnErrorListener {
+        OnPreparedListener, OnErrorListener {
 
     private static final String LOG_TAG = MediaPlayerThread.class.getSimpleName();
 
     private MediaPlayer mMediaPlayer = new MediaPlayer();
     private IMediaPlayerThreadClient mClient;
     private WifiManager.WifiLock mWifiLock;
-    private Context mContext;
 
     public MediaPlayerThread(IMediaPlayerThreadClient client, Context context) {
         mClient = client;
-        mContext = context;
         mWifiLock = ((WifiManager) context.getApplicationContext().getSystemService(
                 Context.WIFI_SERVICE)).createWifiLock(
                 WifiManager.WIFI_MODE_FULL, "streamplayer.lock");
@@ -48,14 +45,14 @@ import java.io.IOException;
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mMediaPlayer.setDataSource(station);
+            mMediaPlayer.setOnErrorListener(this);
             mMediaPlayer.setOnBufferingUpdateListener(this);
-            mMediaPlayer.setOnInfoListener(this);
             mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.prepareAsync();
 
             mWifiLock.acquire();
 
-        }catch (IOException e){
+        } catch (IOException e) {
 
         }
     }
@@ -90,7 +87,7 @@ import java.io.IOException;
      * Stops the contained StatefulMediaPlayer.
      */
     public void stopMediaPlayer() {
-        if(mMediaPlayer != null) {
+        if (mMediaPlayer != null) {
             if (mMediaPlayer.isPlaying()) {
                 mMediaPlayer.stop();
             }
@@ -116,14 +113,11 @@ import java.io.IOException;
 
     @Override
     public boolean onError(MediaPlayer player, int what, int extra) {
-        mMediaPlayer.reset();
-        mClient.onError();
-        return true;
-    }
+        Log.d(LOG_TAG, "onError " + what + " " + extra);
 
-    @Override
-    public boolean onInfo(MediaPlayer mp, int what, int extra) {
-        return false;
+        mMediaPlayer.reset();
+        mClient.onError(what, extra);
+        return true;
     }
 
     @Override

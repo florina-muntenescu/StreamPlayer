@@ -1,7 +1,5 @@
 package com.android.magic.stream.player;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -20,8 +18,6 @@ import rx.Subscriber;
  */
 /*package*/ class MetaDataRetriever {
 
-    private static final String LOG_TAG = MetaDataRetriever.class.getSimpleName();
-
     private static final String STREAM_TITLE = "StreamTitle";
 
     protected URL mStreamUrl;
@@ -32,29 +28,6 @@ import rx.Subscriber;
         setStreamUrl(streamUrl);
 
         isError = false;
-    }
-
-    /**
-     * Get the mMetadata of the url async, every 5 seconds
-     *
-     * @return a mapping containing the url and the stream title and possibly artist
-     */
-    public Observable<String> getMetadataAsync() {
-
-        return Observable.create(
-                new Observable.OnSubscribe<String>() {
-                    @Override
-                    public void call(
-                            final Subscriber<? super String> observer) {
-                        Log.d(LOG_TAG, "call refresh");
-                        try {
-                            retreiveMetadata();
-                            observer.onNext(mMetadata.get(STREAM_TITLE));
-                        } catch (IOException e) {
-                        }
-
-                    }
-                });
     }
 
     public String getMetadata() throws IOException {

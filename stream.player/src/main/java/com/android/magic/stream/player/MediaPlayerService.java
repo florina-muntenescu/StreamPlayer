@@ -179,9 +179,30 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
 
     @Override
-    public void onError() {
+    public void onError(int what, int extra) {
         if (mListener != null) {
-            mListener.onError();
+            if(what == MediaPlayer.MEDIA_ERROR_UNKNOWN){
+                mListener.onError(StreamPlayerError.PLAYER_UNKNOWN_ERROR);
+                return;
+            }
+
+            switch (extra) {
+                case MediaPlayer.MEDIA_ERROR_IO:
+                    mListener.onError(StreamPlayerError.PLAYER_IO_ERROR);
+                    break;
+
+                case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
+                    mListener.onError(StreamPlayerError.PLAYER_TIMED_OUT);
+                    break;
+
+                case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
+                case MediaPlayer.MEDIA_ERROR_MALFORMED:
+                    mListener.onError(StreamPlayerError.PLAYER_UNSUPPORTED);
+                    break;
+                default:
+                    mListener.onError(StreamPlayerError.PLAYER_UNKNOWN_ERROR);
+                    break;
+            }
         }
     }
 
@@ -250,6 +271,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      * Request the metadata every
      * {@link MediaPlayerService}#METADATA_REQUEST_TIME_INTERVAL_SECONDS = 15 and notify the track
      * listener when the track has been changed
+     *
      * @param trackListener listener that listens to track changed
      */
     private void getMetaData(final TrackListener trackListener) {
