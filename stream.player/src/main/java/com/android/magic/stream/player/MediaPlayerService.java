@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
@@ -19,7 +20,8 @@ import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
- * An extension of android.app.Service class which provides management to a MediaPlayerThread.</p>
+ * An extension of android.app.Service class which provides management to a MediaPlayerThread.
+ * <p/>
  * Add this service in the AndroidManifest file.
  */
 public class MediaPlayerService extends Service implements IMediaPlayerThreadClient {
@@ -27,6 +29,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
     private static final String LOG_TAG = MediaPlayerService.class.getSimpleName();
 
     public static final String MEDIA_PLAYER_SERVICE = "stream.player.MediaPlayerService";
+
     private static final int METADATA_REQUEST_TIME_INTERVAL_SECONDS = 15; // seconds
 
     private MediaPlayerThread mMediaPlayerThread;
@@ -69,10 +72,15 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
     /**
      * Returns the contained StatefulMediaPlayer
      *
-     * @return
+     * @return the {@link android.media.MediaPlayer} or null
      */
-    public MediaPlayer getMediaPlayer() {
-        return mMediaPlayerThread.getMediaPlayer();
+    public
+    @Nullable
+    MediaPlayer getMediaPlayer() {
+        if (mMediaPlayerThread != null) {
+            return mMediaPlayerThread.getMediaPlayer();
+        }
+        return null;
     }
 
 
@@ -83,7 +91,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
 
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, final int flags, final int startId) {
         return START_NOT_STICKY;
     }
 
@@ -94,7 +102,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      * @param listener The listener of this service, which implements the  {@link
      *                 StreamPlayerListener}  interface
      */
-    public void addListener(StreamPlayerListener listener) {
+    public void addListener(final StreamPlayerListener listener) {
         mListener = listener;
     }
 
@@ -111,7 +119,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      * @param listener The listener for the track, which implements the  {@link
      *                 com.android.magic.stream.player.TrackListener}  interface
      */
-    public void addTrackListener(TrackListener listener) {
+    public void addTrackListener(final TrackListener listener) {
         Log.d(LOG_TAG, "addTrackListener");
         mTrackListener = listener;
     }
@@ -181,7 +189,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
     @Override
     public void onError(int what, int extra) {
         if (mListener != null) {
-            if(what == MediaPlayer.MEDIA_ERROR_UNKNOWN){
+            if (what == MediaPlayer.MEDIA_ERROR_UNKNOWN) {
                 mListener.onError(StreamPlayerError.PLAYER_UNKNOWN_ERROR);
                 return;
             }
@@ -294,8 +302,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
                             final String metadata = retriever.getMetadata();
                             Log.d(LOG_TAG, "metadata retrieved: " + metadata);
                             Log.d(LOG_TAG, "is playing " + isPlaying() + " current track " + mCurrentTrack);
-                            if (isPlaying() && !metadata.equals
-                                    (mCurrentTrack)) {
+                            if (isPlaying() && !metadata.equals(mCurrentTrack)) {
                                 mCurrentTrack = metadata;
                                 trackListener.onTrackChanged(mCurrentTrack);
                             }

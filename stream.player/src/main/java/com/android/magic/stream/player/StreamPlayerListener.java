@@ -14,6 +14,7 @@ public interface StreamPlayerListener {
     /**
      * A callback made by a MediaPlayerService onto its listeners to indicate that a player
      * encountered an error.
+     *
      * @param error - the stream player error
      */
     public void onError(StreamPlayerError error);

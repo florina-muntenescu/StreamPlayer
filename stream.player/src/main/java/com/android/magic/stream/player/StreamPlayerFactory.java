@@ -11,7 +11,7 @@ public class StreamPlayerFactory {
     private static StreamPlayerImplementation mStreamPlayerImplementation;
 
     public static StreamPlayer getStreamPlayerInstance(Context context) {
-        if(context == null)
+        if (context == null)
             return null;
 
         if (mStreamPlayerImplementation == null) {

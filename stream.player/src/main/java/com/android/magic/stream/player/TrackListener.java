@@ -16,6 +16,7 @@ public interface TrackListener {
 
     /**
      * Notifies when a new track is being played and which track it is
+     *
      * @param track the currently playing track
      */
     public void onTrackChanged(@Nullable final String track);

@@ -26,7 +26,8 @@ package com.android.magic.stream.player;
     /**
      * A callback made by a MediaPlayerThread onto its clients to indicate that a player
      * encountered an error.
-     * @param what - the what returned by {@link android.media.MediaPlayer}#onError
+     *
+     * @param what  - the what returned by {@link android.media.MediaPlayer}#onError
      * @param extra - the extra returned by {@link android.media.MediaPlayer}#onError
      */
     public void onError(int what, int extra);

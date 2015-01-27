@@ -70,8 +70,6 @@ public class RadiosFragment extends android.support.v4.app.Fragment {
     static class ViewHolder {
         @InjectView(R.id.radio_title)
         TextView title;
-        @InjectView(R.id.play_button)
-        ImageView playButton;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
@@ -79,7 +77,7 @@ public class RadiosFragment extends android.support.v4.app.Fragment {
     }
 
 
-    private class RadiosListAdapter extends ArrayAdapter<String> {
+    private static class RadiosListAdapter extends ArrayAdapter<String> {
         private LayoutInflater mLayoutInflater;
 
         public RadiosListAdapter(Context context, int resource, List<String> objects) {

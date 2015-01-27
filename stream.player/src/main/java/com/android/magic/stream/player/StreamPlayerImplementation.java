@@ -54,7 +54,7 @@ import android.util.Log;
      */
     @Override
     public void pause() {
-        if (mService.getMediaPlayer().isPlaying()) {
+        if (mService.getMediaPlayer() != null && mService.getMediaPlayer().isPlaying()) {
             mService.pauseMediaPlayer();
         }
     }
@@ -64,7 +64,7 @@ import android.util.Log;
      */
     @Override
     public void stop() {
-        if (mService.getMediaPlayer().isPlaying()) {
+        if (mService.getMediaPlayer() != null && mService.getMediaPlayer().isPlaying()) {
             mService.stopMediaPlayer();
         }
     }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controller for the player
+ * Controller for the player.
  */
 public class PlayerController implements StreamPlayerListener, TrackListener {
 
@@ -34,8 +34,8 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
 
     private static PlayerController mInstance;
 
-    public static PlayerController getInstance(final Context context){
-        if(mInstance == null){
+    public static PlayerController getInstance(final Context context) {
+        if (mInstance == null) {
             mInstance = new PlayerController(context);
         }
         return mInstance;
@@ -74,7 +74,7 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
         mStreamPlayer.pause();
     }
 
-    public void stop(){
+    public void stop() {
         mStreamPlayer.stop();
     }
 

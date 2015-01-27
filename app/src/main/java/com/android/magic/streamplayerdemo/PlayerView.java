@@ -72,7 +72,7 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
                         }
                     }
                 });
-        if(mPlayerController.getPlayingUrl() != null){
+        if (mPlayerController.getPlayingUrl() != null) {
             mRadio = mPlayerController.getPlayingUrl();
         }
     }
@@ -83,7 +83,7 @@ public class PlayerView extends LinearLayout implements PlayerController.PlayerL
         mPlayerController.unregisterListener(this);
     }
 
-    public void setPlayingURL(String radioURL){
+    public void setPlayingURL(String radioURL) {
         mRadioUrl.setText(radioURL);
         mRadio = radioURL;
         mPlayPauseButton.setImageResource(R.drawable.pause_circle_fill);

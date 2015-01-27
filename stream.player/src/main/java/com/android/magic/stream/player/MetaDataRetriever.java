@@ -10,9 +10,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import rx.Observable;
-import rx.Subscriber;
-
 /**
  * Handles retrieving and parsing of the metadata to get the stream title.
  */
@@ -115,14 +112,6 @@ import rx.Subscriber;
         stream.close();
     }
 
-    public boolean isError() {
-        return isError;
-    }
-
-    public URL getStreamUrl() {
-        return mStreamUrl;
-    }
-
     public void setStreamUrl(URL streamUrl) {
         this.mMetadata = null;
         this.mStreamUrl = streamUrl;
@@ -137,7 +126,7 @@ import rx.Subscriber;
         for (int i = 0; i < metaParts.length; i++) {
             m = p.matcher(metaParts[i]);
             if (m.find()) {
-                metadata.put((String) m.group(1), (String) m.group(2));
+                metadata.put(m.group(1), m.group(2));
             }
         }
 

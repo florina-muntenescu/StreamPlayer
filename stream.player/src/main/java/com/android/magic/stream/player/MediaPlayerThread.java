@@ -13,7 +13,8 @@ import java.io.IOException;
 
 
 /**
- * Player thread
+ * Player thread - handles the {@link android.media.MediaPlayer} instance and all the notifications
+ * related to it
  */
 /*default*/ class MediaPlayerThread extends Thread implements OnBufferingUpdateListener,
         OnPreparedListener, OnErrorListener {
@@ -122,13 +123,9 @@ import java.io.IOException;
 
     @Override
     public void onPrepared(MediaPlayer player) {
-        Log.d(LOG_TAG, "prepared ");
         startMediaPlayer();
     }
 
-    /**
-     * @return
-     */
     public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
     }

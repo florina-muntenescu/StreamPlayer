@@ -10,13 +10,13 @@ import android.content.Intent;
  * disconnects the headphones from the device. However, this behavior does not happen automatically.
  * If you don't implement this feature, audio plays out of the device's external speakers,
  * which might not be what the user wants.
- *
+ * <p/>
  * Add this receiver in the Manifest file to automatically stop the player and the service when the
  * headphones are removed
  */
 public class MusicIntentReceiver extends android.content.BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         if (intent.getAction().equals(
                 android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
             StreamPlayerFactory.getStreamPlayerInstance(context).stop();
