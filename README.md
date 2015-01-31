@@ -1,6 +1,6 @@
 # StreamPlayer
 
-StreamPlayer is a simple audio streaming library that will
+StreamPlayer is a simple audio streaming library that will:
 
   - play/pause/stop a stream
   - notify when these happen on the StreamPlayerListener
@@ -14,14 +14,14 @@ Checkout the [downloads] folder for a release jar.
 
 ### Installation
 
-Put the jar in your libs folder and add this on your build.gradle file
+Put the jar in your libs folder and add this on your build.gradle file:
 ```groovy
 compile files('libs/StreamPlayer.jar')
 ```
 
 What to add in the *AndroidManifest.xml* file:
 
-To allow playing, the following service needs to be added
+To allow playing, the following service needs to be added:
 ```xml
 <service android:name="com.android.magic.stream.player.MediaPlayerService"/>
 ```
