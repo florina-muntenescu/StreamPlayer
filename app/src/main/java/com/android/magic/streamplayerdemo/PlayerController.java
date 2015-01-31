@@ -7,7 +7,7 @@ import com.android.magic.stream.player.StreamPlayer;
 import com.android.magic.stream.player.StreamPlayerError;
 import com.android.magic.stream.player.StreamPlayerFactory;
 import com.android.magic.stream.player.StreamPlayerListener;
-import com.android.magic.stream.player.TrackListener;
+import com.android.magic.stream.player.MetadataListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Controller for the player.
  */
-public class PlayerController implements StreamPlayerListener, TrackListener {
+public class PlayerController implements StreamPlayerListener, MetadataListener {
 
     private static final String LOG_TAG = PlayerController.class.getSimpleName();
 
@@ -99,10 +99,10 @@ public class PlayerController implements StreamPlayerListener, TrackListener {
     }
 
     @Override
-    public void onTrackChanged(String track) {
-        Log.d(LOG_TAG, "track changed " + track + " listeners " + mPlayerListenerList.size());
+    public void onMetadataChanged(String metadata) {
+        Log.d(LOG_TAG, "track changed " + metadata + " listeners " + mPlayerListenerList.size());
         for (PlayerListener listener : mPlayerListenerList) {
-            listener.onTrackChanged(track);
+            listener.onTrackChanged(metadata);
         }
     }
 }

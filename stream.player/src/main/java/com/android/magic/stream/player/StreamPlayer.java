@@ -31,7 +31,7 @@ import android.support.annotation.NonNull;
  * stop the music playing when removing the headphones.
  * Register a {@link StreamPlayerListener} to receive
  * notifications about different {@link android.media.MediaPlayer}'s states.
- * Register a {@link com.android.magic.stream.player.TrackListener} to receive notifications about
+ * Register a {@link MetadataListener} to receive notifications about
  * track changes.
  */
 public interface StreamPlayer {
@@ -80,7 +80,7 @@ public interface StreamPlayer {
     /**
      * Register a listener to be notified about track changes for the current stream
      */
-    public void registerTrackListener(TrackListener listener);
+    public void registerTrackListener(MetadataListener listener);
 
     /**
      * Unregister the track listener

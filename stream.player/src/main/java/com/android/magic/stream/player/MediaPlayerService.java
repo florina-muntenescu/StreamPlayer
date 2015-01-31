@@ -39,7 +39,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
     private Subscription mTrackMetadataSubscription;
 
     private StreamPlayerListener mListener;
-    private TrackListener mTrackListener;
+    private MetadataListener mMetadataListener;
 
     private MusicIntentReceiver mReceiver = new MusicIntentReceiver();
 
@@ -117,11 +117,11 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      * Add a listener of the track change.
      *
      * @param listener The listener for the track, which implements the  {@link
-     *                 com.android.magic.stream.player.TrackListener}  interface
+     *                 MetadataListener}  interface
      */
-    public void addTrackListener(final TrackListener listener) {
+    public void addTrackListener(final MetadataListener listener) {
         Log.d(LOG_TAG, "addTrackListener");
-        mTrackListener = listener;
+        mMetadataListener = listener;
     }
 
     /**
@@ -129,7 +129,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      */
     public void removeTrackListener() {
         Log.d(LOG_TAG, "removeTrackListener");
-        mTrackListener = null;
+        mMetadataListener = null;
         if (mTrackMetadataSubscription != null) {
             mTrackMetadataSubscription.unsubscribe();
         }
@@ -225,8 +225,8 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
             mListener.onPlaying(mURL);
         }
         stopRetrievingMetadata();
-        if (mTrackListener != null) {
-            getMetaData(mTrackListener);
+        if (mMetadataListener != null) {
+            getMetaData(mMetadataListener);
         }
     }
 
@@ -280,9 +280,9 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
      * {@link MediaPlayerService}#METADATA_REQUEST_TIME_INTERVAL_SECONDS = 15 and notify the track
      * listener when the track has been changed
      *
-     * @param trackListener listener that listens to track changed
+     * @param metadataListener listener that listens to track changed
      */
-    private void getMetaData(final TrackListener trackListener) {
+    private void getMetaData(final MetadataListener metadataListener) {
         Log.d(LOG_TAG, "requesting medatada");
         URL url = null;
         try {
@@ -304,7 +304,7 @@ public class MediaPlayerService extends Service implements IMediaPlayerThreadCli
                             Log.d(LOG_TAG, "is playing " + isPlaying() + " current track " + mCurrentTrack);
                             if (isPlaying() && !metadata.equals(mCurrentTrack)) {
                                 mCurrentTrack = metadata;
-                                trackListener.onTrackChanged(mCurrentTrack);
+                                metadataListener.onMetadataChanged(mCurrentTrack);
                             }
 
                         } catch (IOException exception) {

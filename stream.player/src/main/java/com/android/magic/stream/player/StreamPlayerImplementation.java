@@ -18,7 +18,7 @@ import android.util.Log;
     private static final String LOG_TAG = StreamPlayerImplementation.class.getSimpleName();
 
     private StreamPlayerListener mStreamPlayerListener;
-    private TrackListener mTrackListener;
+    private MetadataListener mMetadataListener;
 
     private MediaPlayerService mService;
     private boolean mBound;
@@ -125,8 +125,8 @@ import android.util.Log;
      * Register a listener to be notified about track changes for the current stream
      */
     @Override
-    public void registerTrackListener(TrackListener listener) {
-        mTrackListener = listener;
+    public void registerTrackListener(MetadataListener listener) {
+        mMetadataListener = listener;
         if (mService != null) {
             mService.addTrackListener(listener);
         }
@@ -182,8 +182,8 @@ import android.util.Log;
             // client
             mBound = true;
             mService.addListener(mStreamPlayerListener);
-            if (mTrackListener != null) {
-                mService.addTrackListener(mTrackListener);
+            if (mMetadataListener != null) {
+                mService.addTrackListener(mMetadataListener);
             }
         }
 
